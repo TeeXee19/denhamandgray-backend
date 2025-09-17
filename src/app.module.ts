@@ -1,13 +1,21 @@
 import { Module } from '@nestjs/common';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { DbModule } from './db/db.module';
 import { DbService } from './db/db.service';
 import { PostsModule } from './posts/posts.module';
+import { NotificationModule } from './notification/notificationl.module';
 
 @Module({
-  imports: [AuthModule, DbModule, PostsModule],
+  imports: [
+    EventEmitterModule.forRoot(),
+    AuthModule, 
+    DbModule, 
+    PostsModule, 
+    NotificationModule
+  ],
   controllers: [AppController],
   providers: [AppService, DbService],
 })

@@ -42,3 +42,41 @@ export class UpdateSummaryDto {
     carbonEmissionsSaved?: string;
 }
 
+export class CreateWhistleblowingReportDto {
+    // Your Information (Optional)
+    @ApiProperty({ required: false, description: 'First name of the reporter' })
+    firstName?: string;
+    @ApiProperty({ required: false, description: 'Last name of the reporter' })
+    lastName?: string;
+    @ApiProperty({ required: true, description: 'Email of the reporter' })
+    email?: string;
+    @ApiProperty({ required: false, description: 'Phone number of the reporter' })
+    phone?: string;
+    @ApiProperty({ required: false, description: 'Role of the reporter (Employee, Vendor, etc.)' })
+    role?: string;
+
+    // Incident Details
+    @ApiProperty({ description: 'Type of misconduct (Fraud, Harassment, Corruption, etc.)' })
+    misconductType: string;
+    @ApiProperty({ description: 'Date and time of the incident' })
+    incidentDateTime: Date;
+    @ApiProperty({ required: false, description: 'Location or department where the incident occurred' })
+    location?: string;
+    @ApiProperty({ required: false, description: 'People involved in the incident (if known)' })
+    peopleInvolved?: string;
+    @ApiProperty({ description: 'Detailed description of what happened' })
+    description: string;
+    @ApiProperty({ description: 'How did you become aware of this incident?' })
+    howAwareDetails: string;
+    @ApiProperty({ required: false, default: false, description: 'Do you have supporting evidence?' })
+    hasSupportingEvidence?: boolean;
+
+    // Confidentiality & Follow-up
+    @ApiProperty({ required: false, default: false, description: 'Do you wish to remain anonymous?' })
+    remainAnonymous?: boolean;
+    @ApiProperty({ required: false, default: false, description: 'Can we contact you for more details?' })
+    canContact?: boolean;
+    @ApiProperty({ required: false, description: 'Any additional comments' })
+    additionalComments?: string;
+}
+

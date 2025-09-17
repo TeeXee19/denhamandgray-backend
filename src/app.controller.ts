@@ -1,8 +1,8 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { AppService } from './app.service';
-import { UpdateStateDto, UpdateSummaryDto } from './app.dto';
+import { UpdateStateDto, UpdateSummaryDto, CreateWhistleblowingReportDto } from './app.dto';
 import { AuthGuard } from './guards/auth.guard';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
 @Controller()
 export class AppController {
@@ -37,6 +37,22 @@ export class AppController {
   @Patch('summary')
   updateSummary(@Body() updateSummaryDto: UpdateSummaryDto) {
     return this.appService.updateSummary(updateSummaryDto);
+  }
+
+  @ApiTags('Reports')
+  @ApiOperation({ summary: 'Submit a report' })
+  @Post('reports')
+  submitReport(@Body() createWhistleblowingReportDto: CreateWhistleblowingReportDto) {
+    return this.appService.createReport(createWhistleblowingReportDto);
+  }
+
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiTags('Reports')
+  @ApiOperation({ summary: 'Get all reports' })
+  @Get('reports')
+  getAllReports() {
+    return this.appService.getAllReports();
   }
 
   @Get()

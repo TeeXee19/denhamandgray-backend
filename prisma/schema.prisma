@@ -72,3 +72,31 @@ model Summary {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt @default(now())
 }
+
+model WhistleblowingReport {
+  id        Int      @default(autoincrement()) @id
+  
+  // Your Information (Optional)
+  firstName   String?
+  lastName    String?
+  email       String?
+  phone       String?
+  role        String?
+  
+  // Incident Details
+  misconductType    String
+  incidentDateTime  DateTime
+  location          String?
+  peopleInvolved    String?
+  description       String
+  howAwareDetails   String
+  hasSupportingEvidence Boolean @default(false)
+  
+  // Confidentiality & Follow-up
+  remainAnonymous   Boolean @default(false)
+  canContact        Boolean @default(false)
+  additionalComments String?
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt @default(now())
+}
