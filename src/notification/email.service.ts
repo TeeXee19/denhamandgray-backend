@@ -15,13 +15,20 @@ export class EmailService {
 
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: process.env.OUTLOOK_SMTP_HOST || 'smtp-mail.outlook.com',
-      port: parseInt(process.env.OUTLOOK_SMTP_PORT || '587'),
+      host: process.env.SMTP_EMAIL_HOST || 'smtp.office365.com',
+      port: parseInt(process.env.SMTP_EMAIL_PORT || '587'),
       secure: false, // true for 465, false for other ports
+      requireTLS: true, // Force TLS
       auth: {
-        user: process.env.OUTLOOK_EMAIL_USER,
-        pass: process.env.OUTLOOK_EMAIL_PASSWORD,
+        user: process.env.SMTP_EMAIL_USERNAME,
+        pass: process.env.SMTP_EMAIL_PASSWORD,
       },
+       tls: {
+        ciphers: 'SSLv3', // Office 365 compatibility
+        rejectUnauthorized: false // Accept self-signed certificates if needed
+      },
+      debug: true, // Enable debug logging
+      logger: true // Enable logging
     });
   }
 
@@ -42,8 +49,8 @@ export class EmailService {
       const jsonAttachment = this.createJsonAttachment(reportData);
 
       const mailOptions = {
-        from: process.env.OUTLOOK_EMAIL_USER,
-        to: process.env.WHISTLEBLOWING_RECIPIENT_EMAIL || process.env.OUTLOOK_EMAIL_USER,
+        from: process.env.SMTP_EMAIL_USERNAME,
+        to: process.env.WHISTLEBLOWING_RECIPIENT_EMAIL || process.env.SMTP_EMAIL_USERNAME,
         subject: `Whistleblowing Report - ${reportData.misconductType || 'Incident'} - ${new Date().toLocaleDateString()}`,
         text: emailContent,
         html: this.formatReportForHtml(reportData),
@@ -56,8 +63,8 @@ export class EmailService {
         ],
       };
 
-      const result = await this.transporter.sendMail(mailOptions);
-      this.logger.log(`Whistleblowing report email sent successfully: ${result.messageId}`);
+      const result: nodemailer.SentMessageInfo = await this.transporter.sendMail(mailOptions);
+      this.logger.log(`Whistleblowing report email sent successfully: ${JSON.stringify(result)}`);
       return result;
     } catch (error) {
       this.logger.error('Failed to send whistleblowing report email:', error);
