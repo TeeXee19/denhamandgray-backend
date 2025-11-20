@@ -7,6 +7,7 @@ import { DbModule } from './db/db.module';
 import { DbService } from './db/db.service';
 import { PostsModule } from './posts/posts.module';
 import { NotificationModule } from './notification/notificationl.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { NotificationModule } from './notification/notificationl.module';
     AuthModule, 
     DbModule, 
     PostsModule, 
-    NotificationModule
+    NotificationModule,
+    CloudinaryModule
   ],
   controllers: [AppController],
   providers: [AppService, DbService],

@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DbService } from './db/db.service';
+import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { UpdateStateDto, UpdateSummaryDto, CreateWhistleblowingReportDto } from './app.dto';
 
 @Injectable()
@@ -9,7 +10,8 @@ export class AppService {
 
   constructor(
     private dbService: DbService,
-    private readonly eventEmitter: EventEmitter2
+    private readonly eventEmitter: EventEmitter2,
+    private cloudinaryService: CloudinaryService
   ) { }
   
   async getStatesData(): Promise<any> {
@@ -50,8 +52,26 @@ export class AppService {
     })
   }
 
-  async createReport(createWhistleblowingReportDto: CreateWhistleblowingReportDto) {
+  async createReport(createWhistleblowingReportDto: CreateWhistleblowingReportDto, file?: Express.Multer.File) {
     try {
+      let evidenceFileUrl: string | null = null;
+
+      // Upload file to Cloudinary if provided
+      if (file) {
+        this.logger.log(`Uploading evidence file: ${file.originalname}`);
+        evidenceFileUrl = await this.cloudinaryService.uploadFile(file);
+        this.logger.log(`File uploaded successfully: ${evidenceFileUrl}`);
+      }
+
+      // Parse boolean values from form-data strings
+      const parseBooleanValue = (value: any): boolean => {
+        if (typeof value === 'boolean') return value;
+        if (typeof value === 'string') {
+          return value.toLowerCase() === 'true' || value === '1';
+        }
+        return false;
+      };
+
       // Create the report in the database
       const report = await this.dbService.whistleblowingReport.create({
         data: {
@@ -66,9 +86,10 @@ export class AppService {
           peopleInvolved: createWhistleblowingReportDto.peopleInvolved,
           description: createWhistleblowingReportDto.description,
           howAwareDetails: createWhistleblowingReportDto.howAwareDetails,
-          hasSupportingEvidence: createWhistleblowingReportDto.hasSupportingEvidence || false,
-          remainAnonymous: createWhistleblowingReportDto.remainAnonymous || false,
-          canContact: createWhistleblowingReportDto.canContact || false,
+          hasSupportingEvidence: parseBooleanValue(createWhistleblowingReportDto.hasSupportingEvidence),
+          evidenceFileUrl: evidenceFileUrl,
+          remainAnonymous: parseBooleanValue(createWhistleblowingReportDto.remainAnonymous),
+          canContact: parseBooleanValue(createWhistleblowingReportDto.canContact),
           additionalComments: createWhistleblowingReportDto.additionalComments,
         }
       });
@@ -77,6 +98,7 @@ export class AppService {
       const reportDataWithId = {
         ...createWhistleblowingReportDto,
         id: report.id,
+        evidenceFileUrl: evidenceFileUrl,
       };
 
       // Emit event - non-blocking and won't delay the response

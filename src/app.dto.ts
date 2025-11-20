@@ -48,7 +48,7 @@ export class CreateWhistleblowingReportDto {
     firstName?: string;
     @ApiProperty({ required: false, description: 'Last name of the reporter' })
     lastName?: string;
-    @ApiProperty({ required: true, description: 'Email of the reporter' })
+    @ApiProperty({ required: false, description: 'Email of the reporter' })
     email?: string;
     @ApiProperty({ required: false, description: 'Phone number of the reporter' })
     phone?: string;
@@ -58,8 +58,8 @@ export class CreateWhistleblowingReportDto {
     // Incident Details
     @ApiProperty({ description: 'Type of misconduct (Fraud, Harassment, Corruption, etc.)' })
     misconductType: string;
-    @ApiProperty({ description: 'Date and time of the incident' })
-    incidentDateTime: Date;
+    @ApiProperty({ description: 'Date and time of the incident (ISO string)' })
+    incidentDateTime: string;
     @ApiProperty({ required: false, description: 'Location or department where the incident occurred' })
     location?: string;
     @ApiProperty({ required: false, description: 'People involved in the incident (if known)' })
@@ -78,5 +78,8 @@ export class CreateWhistleblowingReportDto {
     canContact?: boolean;
     @ApiProperty({ required: false, description: 'Any additional comments' })
     additionalComments?: string;
+
+    // File upload (handled by multer, not in DTO)
+    evidenceFile?: any;
 }
 

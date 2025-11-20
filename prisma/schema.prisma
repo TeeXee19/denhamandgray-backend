@@ -9,8 +9,7 @@ generator client {
 }
 
 datasource db {
-  // provider = "postgresql"
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -91,6 +90,7 @@ model WhistleblowingReport {
   description       String
   howAwareDetails   String
   hasSupportingEvidence Boolean @default(false)
+  evidenceFileUrl   String?  // Cloudinary file URL
   
   // Confidentiality & Follow-up
   remainAnonymous   Boolean @default(false)

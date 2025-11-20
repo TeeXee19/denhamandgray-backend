@@ -3,9 +3,10 @@ import { OnEvent } from '@nestjs/event-emitter';
 import * as nodemailer from 'nodemailer';
 import { CreateWhistleblowingReportDto } from '../app.dto';
 
-// Extended DTO for email purposes that includes the generated ID
+// Extended DTO for email purposes that includes the generated ID and file URL
 interface WhistleblowingReportWithId extends CreateWhistleblowingReportDto {
   id?: number;
+  evidenceFileUrl?: string;
 }
 
 @Injectable()
@@ -95,6 +96,7 @@ Description: ${data.description || 'Not provided'}
 How Reporter Became Aware: ${data.howAwareDetails || 'Not provided'}
 
 Supporting Evidence: ${data.hasSupportingEvidence ? 'Yes' : 'No'}
+${data.evidenceFileUrl ? `Evidence File: ${data.evidenceFileUrl}` : ''}
 
 === CONFIDENTIALITY ===
 Wishes to Remain Anonymous: ${data.remainAnonymous ? 'Yes' : 'No'}
