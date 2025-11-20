@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { LoginDto, LoginResponseData } from './dto/auth.dto';
