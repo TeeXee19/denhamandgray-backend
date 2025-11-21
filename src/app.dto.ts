@@ -83,3 +83,14 @@ export class CreateWhistleblowingReportDto {
     evidenceFile?: any;
 }
 
+export class CreateContactSubmissionDto {
+    @ApiProperty({ description: 'Full name of the person contacting' })
+    name: string;
+    @ApiProperty({ description: 'Email address' })
+    email: string;
+    @ApiProperty({ required: false, description: 'Phone number' })
+    phone?: string;
+    @ApiProperty({ description: 'Message or notes' })
+    notes: string;
+}
+

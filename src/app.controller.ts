@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Param, Patch, Post, UseGuards, UseInterceptors, UploadedFile } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AppService } from './app.service';
-import { UpdateStateDto, UpdateSummaryDto, CreateWhistleblowingReportDto } from './app.dto';
+import { UpdateStateDto, UpdateSummaryDto, CreateWhistleblowingReportDto, CreateContactSubmissionDto } from './app.dto';
 import { AuthGuard } from './guards/auth.guard';
 import { ApiBearerAuth, ApiOperation, ApiTags, ApiConsumes, ApiBody } from '@nestjs/swagger';
 
@@ -87,6 +87,22 @@ export class AppController {
   @Get('reports')
   getAllReports() {
     return this.appService.getAllReports();
+  }
+
+  @ApiTags('Contact')
+  @ApiOperation({ summary: 'Submit a contact form' })
+  @Post('contact')
+  submitContact(@Body() createContactSubmissionDto: CreateContactSubmissionDto) {
+    return this.appService.createContactSubmission(createContactSubmissionDto);
+  }
+
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiTags('Contact')
+  @ApiOperation({ summary: 'Get all contact submissions' })
+  @Get('contact')
+  getAllContacts() {
+    return this.appService.getAllContacts();
   }
 
   @Get()

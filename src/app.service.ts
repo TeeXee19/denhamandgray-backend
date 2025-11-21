@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { DbService } from './db/db.service';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
-import { UpdateStateDto, UpdateSummaryDto, CreateWhistleblowingReportDto } from './app.dto';
+import { UpdateStateDto, UpdateSummaryDto, CreateWhistleblowingReportDto, CreateContactSubmissionDto } from './app.dto';
 
 @Injectable()
 export class AppService {
@@ -114,6 +114,33 @@ export class AppService {
 
   async getAllReports() {
     return await this.dbService.whistleblowingReport.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+  }
+
+  async createContactSubmission(createContactSubmissionDto: CreateContactSubmissionDto) {
+    try {
+      const contact = await this.dbService.contactSubmission.create({
+        data: {
+          name: createContactSubmissionDto.name,
+          email: createContactSubmissionDto.email,
+          phone: createContactSubmissionDto.phone,
+          notes: createContactSubmissionDto.notes,
+        }
+      });
+
+      this.logger.log(`Contact submission created with ID: ${contact.id}`);
+      return contact;
+    } catch (error) {
+      this.logger.error('Failed to create contact submission:', error);
+      throw error;
+    }
+  }
+
+  async getAllContacts() {
+    return await this.dbService.contactSubmission.findMany({
       orderBy: {
         createdAt: 'desc'
       }
